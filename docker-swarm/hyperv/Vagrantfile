@@ -1,0 +1,140 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+#BOX = "ubuntu/xenial64"
+BOX = "bento/ubuntu-16.04"
+BOX_VERSION = "201808.24.0"
+BOX_MEM = "1024"
+BOX_MEM_MAX = "2048"
+BOX_CPU = "2"
+BOX_BOOTSTRAP = "bootstrap-default.sh"
+
+servers = [
+  {
+    :name => "docker-master-1",
+    :type => "master",
+    :box => BOX,
+    :box_version => BOX_VERSION,
+    :mac => "5CA1AB1E0001",
+    :ip_addr => "192.168.1.161",
+    :mem => BOX_MEM,
+    :max_mem => BOX_MEM_MAX,
+    :cpu => BOX_CPU,
+    :scripts => [
+      {
+        :bootstrap => BOX_BOOTSTRAP
+      },
+     ]
+  },
+  {
+    :name => "docker-master-2",    
+    :type => "master",
+    :box => BOX,
+    :box_version => BOX_VERSION,
+    :mac => "5CA1AB1E0002",
+    :ip_addr => "192.168.1.162",
+    :mem => BOX_MEM,
+    :max_mem => BOX_MEM_MAX,
+    :cpu => BOX_CPU,
+    :scripts => [
+      {
+        :bootstrap => BOX_BOOTSTRAP
+      },
+     ]
+  },
+  {
+    :name => "docker-master-3",
+    :type => "master",
+    :box => BOX,
+    :box_version => BOX_VERSION,
+    :mac => "5CA1AB1E0003",
+    :ip_addr => "192.168.1.163",
+    :mem => BOX_MEM,
+    :max_mem => BOX_MEM_MAX,
+    :cpu => BOX_CPU,
+    :scripts => [
+      {
+        :bootstrap => BOX_BOOTSTRAP
+      },
+     ]
+  },
+  {
+    :name => "docker-node-1",
+    :type => "node",
+    :box => BOX,
+    :box_version => BOX_VERSION,
+    :mac => "5CA1AB1E0004",
+    :ip_addr => "192.168.1.164",
+    :mem => BOX_MEM,
+    :max_mem => BOX_MEM_MAX,
+    :cpu => BOX_CPU,    
+    :scripts => [
+      {
+        :bootstrap => BOX_BOOTSTRAP
+      },
+     ]
+  },
+  {
+    :name => "docker-node-2",
+    :type => "node",
+    :box => BOX,
+    :box_version => BOX_VERSION,
+    :mac => "5CA1AB1E0005",
+    :ip_addr => "192.168.1.165",
+    :mem => BOX_MEM,
+    :max_mem => BOX_MEM_MAX,
+    :cpu => BOX_CPU,
+    :scripts => [
+      {
+        :bootstrap => BOX_BOOTSTRAP
+      },
+     ]
+  },
+  {
+    :name => "docker-node-3",
+    :type => "node",
+    :box => BOX,
+    :box_version => BOX_VERSION,
+    :mac => "5CA1AB1E0006",
+    :ip_addr => "192.168.1.166",
+    :mem => BOX_MEM,
+    :max_mem => BOX_MEM_MAX,
+    :cpu => BOX_CPU,
+    :scripts => [
+      {
+        :bootstrap => BOX_BOOTSTRAP
+      },
+     ]
+  }
+]
+
+Vagrant.configure("2") do |config|
+  servers.each do |opts|
+    config.vm.define opts[:name] do |config|
+      config.vm.synced_folder '.', '/vagrant', disabled: true
+      config.vm.box = opts[:box]
+      config.vm.box_version = opts[:box_version]
+      config.vm.hostname = opts[:name]
+      
+      config.vm.network "public_network", ip: opts[:ip_addr], bridge: "External"
+                  
+      opts[:scripts].each do |scripts|
+        if scripts[:args]
+          config.vm.provision :shell, path: scripts[:bootstrap], :args => scripts[:args]
+        else
+          config.vm.provision :shell, path: scripts[:bootstrap]
+        end
+      end
+
+      config.vm.provider "hyperv" do |v|
+        v.vmname  = opts[:name]
+        v.enable_virtualization_extensions = true
+        v.cpus = opts[:cpu]
+        v.memory = opts[:mem]
+        v.mac = opts[:mac]
+        v.maxmemory = opts[:max_mem]
+        v.auto_start_action = "Start"
+      end
+    end
+  end
+end 
