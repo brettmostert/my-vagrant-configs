@@ -39,9 +39,14 @@ Vagrant.configure("2") do |config|
       config.vm.box = opts[:box]
       config.vm.box_version = opts[:box_version]
       config.vm.hostname = opts[:name]
+
+      # config.ssh.insert_key = false # 1
+      # config.ssh.private_key_path = ['~/.vagrant.d/insecure_private_key', '~/.ssh/id_rsa'] # 2
+      # config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys" # 3
      
+      config.ssh.insert_key = false # 1
+      config.ssh.private_key_path = ["#{home}/.vagrant.d/insecure_private_key", "#{home}/.ssh/wsl-copy/id_rsa"] # 2
       config.vm.provision "file", source: "#{home}/.ssh/wsl-copy/id_rsa_default.pub", destination: "~/.ssh/authorized_keys" # 3
-      
       config.vm.network "public_network", bridge: "External"
                   
       opts[:scripts].each do |scripts|

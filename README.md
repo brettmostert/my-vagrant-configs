@@ -1,4 +1,11 @@
 # vagrant notes and reminders
+
+TODO 1 : Run Vagrant Up for K8 (PASS IN USERNAME and PASSWORD or it will default to admin admin)
+TODO 2 : Then run #ssh-copy-id admin@hostname to copy ssh key correctly - login to check it
+TODO 3 : Setup ansible to use ssh pub/pvt ket instead
+
+
+
 Vagrant Files
 
 

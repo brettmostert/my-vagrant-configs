@@ -7,3 +7,8 @@ sudo adduser $1 --gecos "Administrator" --disabled-password
 echo $1":"$2 | sudo chpasswd
 
 sudo usermod -aG sudo admin
+
+
+
+#just use this to copy to the machines
+#ssh-copy-id admin@test
