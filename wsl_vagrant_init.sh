@@ -8,3 +8,4 @@ vagrant --version
 
 export VAGRANT_WSL_ENABLE_WINDOWS_ACCESS="1"
 export PATH="$PATH:/c/Program Files/Hyper-V"
+export VAGRANT_DEFAULT_PROVIDER="hyperv"
