@@ -1,0 +1,9 @@
+[masters]
+master ansible_host=k8-master-node ansible_user=root
+
+[workers]
+worker1 ansible_host=k8-worker-node-1 ansible_user=root
+worker2 ansible_host=k8-worker-node-1 ansible_user=root
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3
