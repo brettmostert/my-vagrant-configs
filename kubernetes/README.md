@@ -6,7 +6,7 @@
 - [x] Accesss via pub/pvt keys (SNAPSHOT-REF:stage2)
 - [x] K8 - 3 Node Cluster (1 Master, 2 Workers) (SNAPSHOT-REF:stage3)
   - [x] Provide naming for kubernetes cluster (using config during init)
-  - [ ] Copy kubeconfig to local from remote (https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
+  - [x] Copy kubeconfig to local from remote (https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
 - [ ] NGINX Ingress Controller Installed
 - [ ] SSL Certificates automatically provisioned from Lets Encrypt
 - [ ] Basic Web Site Running on NGINX for Testing
