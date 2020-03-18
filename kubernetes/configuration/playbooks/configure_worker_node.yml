@@ -1,5 +1,8 @@
+---
 - hosts: master
   become: yes
+  vars_files:
+    - ../vars/default.yml
   gather_facts: false
   tasks:
     - name: get join command
@@ -10,12 +13,16 @@
       set_fact:
         join_command: "{{ join_command_raw.stdout_lines[0] }}"
 
-
 - hosts: workers
   become: yes
   tasks:
     - name: join cluster
       shell: "{{ hostvars['master'].join_command }} >> node_joined.txt"
-      args:
-        chdir: $HOME
+      args:        
         creates: node_joined.txt
+
+    - name: copy generated node_joined.txt logs to local host
+      fetch:
+        src: /home/ansible/node_joined.txt
+        dest: ../output/node_joined-{{ansible_host}}.txt
+        flat: yes

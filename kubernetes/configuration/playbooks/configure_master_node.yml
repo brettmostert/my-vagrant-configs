@@ -1,0 +1,76 @@
+---
+- hosts: master
+  become: yes
+  vars_files:
+    - ../vars/default.yml
+  tasks:    
+    - name: generate k8 config
+      copy:
+        dest: "k8-custom-config.yml"
+        content: |
+          apiVersion: kubeadm.k8s.io/v1beta2
+          kind: ClusterConfiguration
+          controlPlaneEndpoint: "{{ansible_host}}"
+          clusterName: "{{k8_cluster_name}}"
+          networking:
+            podSubnet: "10.100.0.1/24"
+
+    - name: initialize the cluster
+      shell: kubeadm init --config=k8-custom-config.yml >> cluster_initialized.txt
+      args:        
+        creates: cluster_initialized.txt
+
+    - name: create .kube directory
+      become: yes
+      become_user: ansible
+      file:
+        path: $HOME/.kube
+        state: directory
+        mode: 0755
+
+    - name: copy admin.conf to user's kube config
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/ansible/.kube/config
+        remote_src: yes
+        owner: ansible
+    
+    - name: create .kube directory for ssh-user
+      become: yes
+      become_user: "{{ ssh_user }}"
+      file:
+        path: $HOME/.kube
+        state: directory
+        mode: 0755
+
+    - name: copy admin.conf to ssh user's kube config
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: "/home/{{ ssh_user }}/.kube/config"
+        remote_src: yes
+        owner: "{{ ssh_user }}"
+
+    - name: copy kube.config to local host
+      fetch:
+        src: /etc/kubernetes/admin.conf
+        dest: ../.output/k8-kube-config.yml
+        flat: yes
+    
+    - name: copy generated cluster_initialized.txt logs to local host
+      fetch:
+        src: /home/ansible/cluster_initialized.txt
+        dest: ../.output/cluster_initialized.txt
+        flat: yes
+
+    - name: install Pod network
+      become: yes
+      become_user: ansible
+      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml >> pod_network_setup.txt
+      args:        
+        creates: pod_network_setup.txt
+    
+    - name: copy generated pod_network_setup.txt logs to local host
+      fetch:
+        src: /home/ansible/pod_network_setup.txt
+        dest: ../.output/pod_network_setup.txt
+        flat: yes

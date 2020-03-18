@@ -1,5 +1,8 @@
+---
 - hosts: all
   become: yes
+  vars_files:
+    - ../vars/default.yml
   tasks:
    - name: install Docker
      apt:
@@ -33,16 +36,6 @@
      apt:
        name: kubeadm=1.17.0-00
        state: present
-
-   - name: disable swapoff
-     shell: swapoff -a
-
-   - name: Disable swapoff permanently
-     replace:
-      path: /etc/fstab
-      regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
-      replace: '#\1\2\3swap\4'
-      backup: yes
 
    - name: add user to docker group
      shell: usermod -a -G docker $USER

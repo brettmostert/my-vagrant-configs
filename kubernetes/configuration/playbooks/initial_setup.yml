@@ -1,0 +1,34 @@
+---
+- hosts: all
+  become: yes
+  vars_files:
+    - ../vars/default.yml
+  tasks:
+    - name: create the 'ansible' user
+      user: name=ansible append=yes state=present createhome=yes shell=/bin/bash
+
+    - name: allow 'ansible' to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        line: 'ansible ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+    - name: set up authorized keys for the 'ansible' user
+      authorized_key: user=ansible key="{{item}}"
+      with_file:
+        - "{{ copy_local_key }}"
+
+    - name: set up authorized keys for the 'admin' user
+      authorized_key: user=admin key="{{item}}"
+      with_file:
+        - "{{ copy_local_key }}"    
+
+    - name: disable swapoff
+      shell: swapoff -a
+
+    - name: Disable swapoff permanently
+      replace:
+       path: /etc/fstab
+       regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
+       replace: '#\1\2\3swap\4'
+       backup: yes

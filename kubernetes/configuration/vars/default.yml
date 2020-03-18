@@ -1,0 +1,4 @@
+---
+copy_local_key: "~/.ssh/id_rsa.pub"
+ssh_user: "admin"
+k8_cluster_name: "KubernetesHomeLab"
