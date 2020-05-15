@@ -28,13 +28,13 @@
 
    - name: install kubelet
      apt:
-       name: kubelet=1.17.0-00
+       name: kubelet=1.18.0-00
        state: present
        update_cache: true
 
    - name: install kubeadm
      apt:
-       name: kubeadm=1.17.0-00
+       name: kubeadm=1.18.0-00
        state: present
 
    - name: add user to docker group
@@ -51,6 +51,6 @@
   tasks:
    - name: install kubectl
      apt:
-       name: kubectl=1.17.0-00
+       name: kubectl=1.18.0-00
        state: present
        force: yes

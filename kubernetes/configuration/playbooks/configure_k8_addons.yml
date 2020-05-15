@@ -1,0 +1,38 @@
+---
+- hosts: master
+  become: yes
+  vars_files:
+    - ../vars/default.yml
+  tasks:
+    - name: install k8 dashboard
+      become: yes
+      become_user: ansible
+      shell : kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml >> dashboard_setup.txt
+      args:        
+        creates: dashboard_setup.txt
+
+    - name: copy generated dashboard_setup.txt logs to local host
+      fetch:
+        src: /home/ansible/dashboard_setup.txt
+        dest: ../.output/dashboard_setup.txt
+        flat: yes
+
+    - name: Copy file with owner and permissions
+      become: yes
+      become_user: ansible
+      copy:
+        src: ../k8/ingress-nginx.yaml
+        dest: /etc/ingress-nginx.yaml        
+    
+    - name: install ingress nginx
+      become: yes
+      become_user: ansible
+      shell : kubectl apply -f /etc/ingress-nginx.yaml >> ingress-nginx_setup.txt
+      args:        
+        creates: ingress-nginx_setup.txt
+
+    - name: copy generated ingress-nginx_setup.txt logs to local host
+      fetch:
+        src: /home/ansible/ingress-nginx_setup.txt
+        dest: ../.output/ingress-nginx_setup.txt
+        flat: yes

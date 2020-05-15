@@ -13,7 +13,7 @@
           controlPlaneEndpoint: "{{ansible_host}}"
           clusterName: "{{k8_cluster_name}}"
           networking:
-            podSubnet: "10.100.0.1/24"
+            podSubnet: "10.244.0.0/16"
 
     - name: initialize the cluster
       shell: kubeadm init --config=k8-custom-config.yml >> cluster_initialized.txt
@@ -74,3 +74,6 @@
         src: /home/ansible/pod_network_setup.txt
         dest: ../.output/pod_network_setup.txt
         flat: yes
+
+    - name: initialize the cluster
+      shell: kubectl taint nodes --all node-role.kubernetes.io/master-

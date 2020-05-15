@@ -26,38 +26,39 @@ servers = [
         :bootstrap => BOX_BOOTSTRAP,
         :args => [username,password]
       },
-     ]
-    },
-  {
-    :name => "k8-worker-node-1",    
-    :type => "slave",
-    :box => BOX,
-    :box_version => BOX_VERSION,    
-    :mem => BOX_MEM,
-    :max_mem => BOX_MEM_MAX,
-    :cpu => BOX_CPU,
-    :scripts => [
-      {
-        :bootstrap => BOX_BOOTSTRAP,
-        :args => [username,password]
-      },
-    ]
-  },
-  {
-    :name => "k8-worker-node-2",    
-    :type => "slave",
-    :box => BOX,
-    :box_version => BOX_VERSION,    
-    :mem => BOX_MEM,
-    :max_mem => BOX_MEM_MAX,
-    :cpu => BOX_CPU,
-    :scripts => [
-      {
-        :bootstrap => BOX_BOOTSTRAP,
-        :args => [username,password]
-      },
-    ]
-  }
+     ]}
+  #   },
+  # {
+  #   :name => "k8-worker-node-1",    
+  #   :type => "slave",
+  #   :box => BOX,
+  #   :box_version => BOX_VERSION,    
+  #   :mem => BOX_MEM,
+  #   :max_mem => BOX_MEM_MAX,
+  #   :cpu => BOX_CPU,
+  #   :scripts => [
+  #     {
+  #       :bootstrap => BOX_BOOTSTRAP,
+  #       :args => [username,password]
+  #     },
+  #   ]
+  # }
+  # },
+  # {
+  #   :name => "k8-worker-node-2",    
+  #   :type => "slave",
+  #   :box => BOX,
+  #   :box_version => BOX_VERSION,    
+  #   :mem => BOX_MEM,
+  #   :max_mem => BOX_MEM_MAX,
+  #   :cpu => BOX_CPU,
+  #   :scripts => [
+  #     {
+  #       :bootstrap => BOX_BOOTSTRAP,
+  #       :args => [username,password]
+  #     },
+  #   ]
+  # }
 ]
 
 Vagrant.configure("2") do |config|
@@ -68,8 +69,8 @@ Vagrant.configure("2") do |config|
       config.vm.box = opts[:box]
       config.vm.box_version = opts[:box_version]
       config.vm.hostname = opts[:name]
-  
       config.vm.network "public_network", bridge: bridge
+      config.vm.synced_folder ".", "/vagrant", disabled: true  
                   
       opts[:scripts].each do |scripts|
         if scripts[:args]
@@ -81,6 +82,7 @@ Vagrant.configure("2") do |config|
 
       config.vm.provider "hyperv" do |v|
         v.vmname  = opts[:name]
+        
         v.enable_virtualization_extensions = true
         v.cpus = opts[:cpu]
         v.memory = opts[:mem]

@@ -7,11 +7,14 @@
 - [x] K8 - 3 Node Cluster (1 Master, 2 Workers) (SNAPSHOT-REF:stage3)
   - [x] Provide naming for kubernetes cluster (using config during init)
   - [x] Copy kubeconfig to local from remote (https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
-- [ ] NGINX Ingress Controller Installed
+- [x] NGINX Ingress Controller Installed (using NodePort accessible via 30080 & 30443)
 - [ ] SSL Certificates automatically provisioned from Lets Encrypt
-- [ ] Basic Web Site Running on NGINX for Testing
+- [x] Basic Web Site Running on NGINX for Testing
+- [x] Basic Web Site Externalised via INGRESS (HTTP) ip:30080/echo1 /echo2
+- [ ] Basic Web Site Externalised via INGRESS (HTTP) - via sub domain
 - [ ] Basic Web Site Externalised via INGRESS (HTTPS)
-- [ ] K8 Dashboard Installed
+- [x] K8 Dashboard Installed
+- [ ] K8 Dashboard accessible via key
 - [ ] K8 Dashboard Externalised via INGRESS (HTTPS)
 
 ## Tools Used
@@ -126,3 +129,12 @@ ansible-playbook setup_k8.yml --extra-vars "k8_cluster_name=my_k8_cluster_name"
 ```
 
 *more to come soon.*
+
+## Setting Up K8
+
+## Getting accesss via kubectl
+export KUBECONFIG="/d/workspaces/my-vagrant-configs/kubernetes/configuration/.output/k8
+-kube-config.yml"
+
+nodeport 30080
+nodeport 30443
